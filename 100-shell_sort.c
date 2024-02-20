@@ -2,33 +2,41 @@
 
 /**
  * shell_sort - Sorts an array of integers
+ * in ascending order using the Shell sort alggorithm,
+ * using the Knuth sequence
  * @array: Pointer to the array of integers to be sorted
  * @size: Number of elements in the array
  */
 
 void shell_sort(int *array, size_t size)
 {
-	size_t gap, i, j;
-	int temp;
+	size_t kunth[1000], k = 0, j = 0, i;
+	int n, j2;
 
-	if (array == NULL || size < 2)
+	if (!array)
 		return;
-
-	/* Determine the starting gap value */
-	while (gap < size / 3)
-		gap = gap * 3 + 1;
-
-	while (gap > 0)
+	while (j * 3 + 1 < size)
 	{
-		for (i = gap; i < size; i++)
+		kunth[k] = j * 3 + 1;
+		j = kunth[k++];
+	}
+	for (i = 0; i < k; i++)
+	{
+		for (j = 0; j < size; j++)
 		{
-			temp = array[i];
-
-			for (j = i; j >= gap && array[j - gap] > temp; j -= gap)
-				array[j] = array[j - gap];
-
-			array[j] = temp;
+			if ((j + kunth[k - i - 1]) > size - 1)
+				break;
+			j2 = j;
+			while (array[j2] > array[j2 + kunth[k - i - 1]])
+			{
+				n = array[j2];
+				array[j2] =  array[j2 + kunth[k - i - 1]];
+				array[j2 + kunth[k - i - 1]] = n;
+				j2 = j2 - kunth[k - i - 1];
+				if (j2 < 0)
+					break;
+			}
 		}
-		gap = (gap - 1) / 3;
+		print_array(array, size);
 	}
 }
